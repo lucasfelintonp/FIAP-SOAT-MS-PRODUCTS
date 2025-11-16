@@ -13,7 +13,7 @@ jobs:
                 java: [17]
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: Dependency review (SCA quick check)
               uses: actions/dependency-review-action@v4
@@ -22,7 +22,7 @@ jobs:
               run: echo "Dependabot is configured via .github/dependabot.yml and runs on schedule; use Dependabot PRs to update deps"
 
             - name: Set up JDK
-              uses: actions/setup-java@v4
+              uses: actions/setup-java@v5
               with:
                   distribution: temurin
                   java-version: ${{ matrix.java }}
@@ -101,22 +101,22 @@ jobs:
             security-events: write
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: Initialize CodeQL
-              uses: github/codeql-action/init@v2
+              uses: github/codeql-action/init@v4
               with:
                   languages: java
 
             - name: Autobuild
-              uses: github/codeql-action/autobuild@v2
+              uses: github/codeql-action/autobuild@v4
 
             - name: Perform CodeQL Analysis
-              uses: github/codeql-action/analyze@v2
+              uses: github/codeql-action/analyze@v4
 
             - name: Upload build artifact (for PR debugging)
               if: always()
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v5
               with:
                   name: target-artifacts
                   path: target/*.jar
