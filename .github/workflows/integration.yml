@@ -1,0 +1,117 @@
+name: Integration
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened, edited, ready_for_review]
+
+jobs:
+    build:
+        name: Build, Test and Static Analysis
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                java: [17]
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Dependency review (SCA quick check)
+              uses: actions/dependency-review-action@v4
+
+            - name: Run Dependabot (informational)
+              run: echo "Dependabot is configured via .github/dependabot.yml and runs on schedule; use Dependabot PRs to update deps"
+
+            - name: Set up JDK
+              uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: ${{ matrix.java }}
+                  cache: maven
+
+            - name: Cache Maven repository
+              uses: actions/cache@v4
+              with:
+                  path: ~/.m2/repository
+                  key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+
+            - name: Build and run tests
+              run: mvn -B -DskipTests=false verify
+
+            - name: Run Checkstyle
+              run: mvn checkstyle:check || true
+
+            - name: Run SpotBugs
+              run: mvn com.github.spotbugs:spotbugs-maven-plugin:4.7.4.0:check || true
+
+            - name: Generate code coverage (JaCoCo)
+              run: mvn jacoco:report
+
+            - name: Enforce minimum coverage (80%)
+              run: |
+                  xml=target/site/jacoco/jacoco.xml
+                  if [ ! -f "$xml" ]; then echo "Jacoco report not found: $xml"; exit 1; fi
+                  vals=$(grep '<counter type="INSTRUCTION"' "$xml" | sed -E 's/.*missed="([0-9]+)".*covered="([0-9]+)".*/\1 \2/')
+                  missed=$(echo $vals | awk '{print $1}')
+                  covered=$(echo $vals | awk '{print $2}')
+                  total=$((missed+covered))
+                  if [ $total -eq 0 ]; then echo "No instructions found in JaCoCo report"; exit 1; fi
+                  # compute percentage with integer arithmetic
+                  percent=$((100 * covered / total))
+                  echo "Coverage: ${percent}% (covered=${covered} total=${total})"
+                  if [ $percent -lt 80 ]; then echo "Coverage ${percent}% is less than required 80%"; exit 1; fi
+
+            - name: SonarQube analysis (optional)
+              if: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_HOST_URL != '' && secrets.SONAR_PROJECT_KEY != '' }}
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                  SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+                  SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+              run: |
+                  mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN} || true
+                  # Wait for quality gate (polling)
+                  echo "Waiting for SonarQube Quality Gate..."
+                  for i in 1 2 3 4 5; do
+                    sleep 5
+                    status=$(curl -s -u ${SONAR_TOKEN}: ${SONAR_HOST_URL}/api/qualitygates/project_status?projectKey=${SONAR_PROJECT_KEY} | jq -r '.projectStatus.status') || true
+                    echo "SonarQube project status: $status"
+                    if [ "$status" = "OK" ]; then
+                      echo "Quality Gate passed"
+                      break
+                    fi
+                    if [ "$status" = "ERROR" ] || [ "$status" = "WARN" ]; then
+                      echo "Quality Gate failed: $status"
+                      exit 1
+                    fi
+                  done
+
+            - name: OWASP Dependency Check (optional)
+              run: mvn org.owasp:dependency-check-maven:check || true
+
+    codeql:
+        name: CodeQL SAST
+        runs-on: ubuntu-latest
+        permissions:
+            actions: read
+            security-events: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Initialize CodeQL
+              uses: github/codeql-action/init@v2
+              with:
+                  languages: java
+
+            - name: Autobuild
+              uses: github/codeql-action/autobuild@v2
+
+            - name: Perform CodeQL Analysis
+              uses: github/codeql-action/analyze@v2
+
+            - name: Upload build artifact (for PR debugging)
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: target-artifacts
+                  path: target/*.jar
