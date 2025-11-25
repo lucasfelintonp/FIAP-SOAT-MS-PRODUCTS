@@ -44,8 +44,8 @@ public class ProductHandler {
         return ResponseEntity.ok(products);
     }
 
-    @PostMapping("/find-all-by-ids")
-    public ResponseEntity<List<ProductDTO>> findAllByIds(@RequestBody List<UUID> ids) {
+    @GetMapping("/find-all-by-ids")
+    public ResponseEntity<List<ProductDTO>> findAllByIds(@RequestParam("ids") List<UUID> ids) {
         var products = productController.findAllByIds(ids);
 
         return ResponseEntity.ok(products);
