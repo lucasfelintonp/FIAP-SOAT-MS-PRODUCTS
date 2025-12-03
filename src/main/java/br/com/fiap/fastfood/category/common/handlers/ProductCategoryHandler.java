@@ -4,6 +4,7 @@ import br.com.fiap.fastfood.category.application.controllers.ProductCategoryCont
 import br.com.fiap.fastfood.category.application.dtos.CreateProductCategoryDTO;
 import br.com.fiap.fastfood.category.application.dtos.ProductCategoryDTO;
 import br.com.fiap.fastfood.category.application.dtos.UpdateProductCategoryDTO;
+import br.com.fiap.fastfood.category.common.exceptions.ProductCategoryNotFoundException;
 import br.com.fiap.fastfood.category.infrastructure.interfaces.ProductCategoryDatasource;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -44,9 +45,12 @@ public class ProductCategoryHandler {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductCategoryDTO> getById(@PathVariable Integer id) {
-        ProductCategoryDTO category = productCategoryController.getProductCategoryById(id);
-        return ResponseEntity
-            .ok(category);
+        try {
+            ProductCategoryDTO category = productCategoryController.getProductCategoryById(id);
+            return ResponseEntity.ok(category);
+        } catch (IllegalArgumentException ex) {
+            throw new ProductCategoryNotFoundException(ex.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
@@ -54,20 +58,28 @@ public class ProductCategoryHandler {
         @PathVariable Integer id,
         @RequestBody @Valid UpdateProductCategoryDTO dto
     ) {
-        ProductCategoryDTO updatedCategory = productCategoryController.updateProductCategory(
-            new UpdateProductCategoryDTO(id, dto.name())
-        );
+        try {
+            ProductCategoryDTO updatedCategory = productCategoryController.updateProductCategory(
+                new UpdateProductCategoryDTO(id, dto.name())
+            );
 
-        return ResponseEntity
-            .ok(updatedCategory);
+            return ResponseEntity
+                .ok(updatedCategory);
+        } catch (IllegalArgumentException ex) {
+            throw new ProductCategoryNotFoundException(ex.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        productCategoryController.deleteProductCategory(id);
+        try {
+            productCategoryController.deleteProductCategory(id);
 
-        return ResponseEntity
-            .noContent()
-            .build();
+            return ResponseEntity
+                .noContent()
+                .build();
+        } catch (IllegalArgumentException ex) {
+            throw new ProductCategoryNotFoundException(ex.getMessage());
+        }
     }
 }
