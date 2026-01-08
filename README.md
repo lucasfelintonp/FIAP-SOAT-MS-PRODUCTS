@@ -114,7 +114,7 @@ chmod +x deploy-local.sh
 Após o deploy, configure o port-forward para acessar a aplicação:
 
 ```bash
-kubectl port-forward -n fastfood svc/catalog-service 8080:8080
+kubectl port-forward -n fastfood svc/catalog 8080:8080
 ```
 
 ### Opção 2: Docker Compose (Mais simples)
@@ -314,7 +314,7 @@ O projeto inclui os seguintes componentes Kubernetes:
 
 - **Namespace**: `fastfood` - Isolamento dos recursos
 - **Deployment**: `catalog` - Aplicação do microserviço (1 réplica)
-- **Service**: `catalog-service` - Exposição da aplicação (ClusterIP na porta 8080)
+- **Service**: `catalog` - Exposição da aplicação (ClusterIP na porta 8080)
 
 ### 🗄️ Banco de dados
 
@@ -334,6 +334,8 @@ As decisões arquiteturais e registros de design do projeto estão na pasta `doc
 - [ADR 01 — Java + Spring (Clean Architecture)](docs/adr-01-java-spring-clean-arch.md)
 - [ADR 02 — Database PostgreSQL/Aurora](docs/adr-02-database-postgresql-aurora.md)
 - [ADR 03 — Deployment Containers/K8s](docs/adr-03-deployment-containers-k8s.md)
+- [ADR 04 — Inventory Consolidation](docs/adr-04-inventory-consolidation.md)
+- [ADR 05 — Renaming Products to Catalog](docs/adr-05-renaming-products-to-catalog.md)
 
 ## 👤 Membros do projeto
 
