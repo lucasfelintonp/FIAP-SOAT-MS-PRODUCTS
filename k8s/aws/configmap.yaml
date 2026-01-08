@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalog-config
+  namespace: fastfood
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://mscatalog.c8ce33firwsf.us-east-1.rds.amazonaws.com:5432/mscatalog
