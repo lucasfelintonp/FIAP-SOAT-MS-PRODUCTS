@@ -334,6 +334,8 @@ As decisões arquiteturais e registros de design do projeto estão na pasta `doc
 - [ADR 01 — Java + Spring (Clean Architecture)](docs/adr-01-java-spring-clean-arch.md)
 - [ADR 02 — Database PostgreSQL/Aurora](docs/adr-02-database-postgresql-aurora.md)
 - [ADR 03 — Deployment Containers/K8s](docs/adr-03-deployment-containers-k8s.md)
+- [ADR 04 — Inventory Consolidation](docs/adr-04-inventory-consolidation.md)
+- [ADR 05 — Renaming Products to Catalog](docs/adr-05-renaming-products-to-catalog.md)
 
 ## 👤 Membros do projeto
 
