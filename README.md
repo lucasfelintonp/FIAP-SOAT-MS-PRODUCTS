@@ -114,7 +114,7 @@ chmod +x deploy-local.sh
 Após o deploy, configure o port-forward para acessar a aplicação:
 
 ```bash
-kubectl port-forward -n fastfood svc/catalog-service 8080:8080
+kubectl port-forward -n fastfood svc/catalog 8080:8080
 ```
 
 ### Opção 2: Docker Compose (Mais simples)
