@@ -14,7 +14,7 @@ public class RequestsSteps {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private TestContext context; // Certifique-se de que TestContext também está nesta pasta
+    private TestContext context;
 
     @Quando("eu realizar um requisicao GET para {string}")
     public void euRealizarUmRequisicaoGETPara(String endpoint) {
