@@ -20,8 +20,6 @@ spec:
           ports:
             - containerPort: 8080
           envFrom:
-            - configMapRef:
-                name: catalog-config
             - secretRef:
                 name: catalog-secret
           readinessProbe:
