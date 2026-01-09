@@ -22,12 +22,6 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v6
 
-            - name: Dependency review (SCA quick check)
-              uses: actions/dependency-review-action@v4
-
-            - name: Run Dependabot (informational)
-              run: echo "Dependabot is configured via .github/dependabot.yml and runs on schedule; use Dependabot PRs to update deps"
-
             - name: Set up JDK
               uses: actions/setup-java@v5
               with:
@@ -67,8 +61,7 @@ jobs:
                   echo "Coverage: ${percent}% (covered=${covered} total=${total})"
                   if [ $percent -lt 80 ]; then echo "Coverage ${percent}% is less than required 80%"; exit 1; fi
 
-            - name: SonarQube analysis (optional)
-              if: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_HOST_URL != '' && secrets.SONAR_PROJECT_KEY != '' }}
+            - name: SonarQube analysis
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
