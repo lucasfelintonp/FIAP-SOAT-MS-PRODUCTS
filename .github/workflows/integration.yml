@@ -18,6 +18,22 @@ jobs:
         strategy:
             matrix:
                 java: [23]
+
+        services:
+            postgres:
+                image: postgres:17.5-alpine3.21
+                env:
+                    POSTGRES_DB: testdb
+                    POSTGRES_USER: testuser
+                    POSTGRES_PASSWORD: testpass
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd="pg_isready -U testuser -d testdb"
+                    --health-interval=10s
+                    --health-timeout=5s
+                    --health-retries=5
+
         steps:
             - name: Checkout
               uses: actions/checkout@v6
@@ -36,13 +52,17 @@ jobs:
                   key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
             - name: Build and run tests
+              env:
+                  SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+                  SPRING_DATASOURCE_USERNAME: testuser
+                  SPRING_DATASOURCE_PASSWORD: testpass
               run: mvn -B -DskipTests=false verify
 
             - name: Run Checkstyle
               run: mvn checkstyle:check || true
 
             - name: Run SpotBugs
-              run: mvn com.github.spotbugs:spotbugs-maven-plugin:4.7.4.0:check || true
+              run: mvn spotbugs:check || true
 
             - name: Generate code coverage (JaCoCo)
               run: mvn jacoco:report
@@ -85,8 +105,8 @@ jobs:
                     fi
                   done
 
-            - name: OWASP Dependency Check (optional)
-              run: mvn org.owasp:dependency-check-maven:check || true
+#            - name: OWASP Dependency Check (optional)
+#              run: mvn org.owasp:dependency-check-maven:check || true
 
     deploy:
         name: Build & Deploy to EKS
