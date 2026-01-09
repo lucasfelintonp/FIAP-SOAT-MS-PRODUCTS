@@ -105,8 +105,8 @@ jobs:
                     fi
                   done
 
-            - name: OWASP Dependency Check (optional)
-              run: mvn org.owasp:dependency-check-maven:check || true
+#            - name: OWASP Dependency Check (optional)
+#              run: mvn org.owasp:dependency-check-maven:check || true
 
     deploy:
         name: Build & Deploy to EKS
