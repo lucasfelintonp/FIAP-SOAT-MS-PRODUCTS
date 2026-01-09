@@ -15,24 +15,22 @@ spec:
     spec:
       containers:
         - name: catalog
-          image: fiap-fastfood-ms-catalog:latest
+          image: 674080151285.dkr.ecr.us-east-1.amazonaws.com/fiap-fastfood-ms-catalog
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
           envFrom:
-            - configMapRef:
-                name: catalog-config
             - secretRef:
                 name: catalog-secret
           readinessProbe:
             httpGet:
-              path: /actuator/health/readiness
+              path: /api/v1/products
               port: 8080
             initialDelaySeconds: 20
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /actuator/health/liveness
+              path: /api/v1/products
               port: 8080
             initialDelaySeconds: 40
             periodSeconds: 20
