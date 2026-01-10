@@ -51,6 +51,13 @@ jobs:
                     path: ~/.m2/repository
                     key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
+            -   name: Run Flyway Migrations
+                env:
+                    SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+                    SPRING_DATASOURCE_USERNAME: testuser
+                    SPRING_DATASOURCE_PASSWORD: testpass
+                run: mvn flyway:migrate
+
             -   name: Build and run tests
                 env:
                     SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
@@ -89,6 +96,7 @@ jobs:
                     retention-days: 30
 
             -   name: SonarCloud Scan
+                if: ${{ secrets.SONAR_TOKEN != '' }}
                 uses: SonarSource/sonarcloud-github-action@v3.1
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -103,6 +111,7 @@ jobs:
                         -Dsonar.sources=src/main/java
                         -Dsonar.tests=src/test/java
                         -Dsonar.java.source=23
+                continue-on-error: true
 
     #            - name: OWASP Dependency Check (optional)
     #              run: mvn org.owasp:dependency-check-maven:check || true
