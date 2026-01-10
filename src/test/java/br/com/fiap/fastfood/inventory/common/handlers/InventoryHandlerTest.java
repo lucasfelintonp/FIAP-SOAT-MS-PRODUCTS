@@ -142,7 +142,8 @@ class InventoryHandlerTest {
         assertNotNull(response.getBody());
         assertEquals("Tomato", response.getBody().name());
         assertEquals(unitDTO, response.getBody().unit());
-        assertEquals(BigDecimal.valueOf(5.00), response.getBody().minimum_quantity());
+        // Use compareTo for BigDecimal comparison (scale-independent)
+        assertEquals(0, response.getBody().minimum_quantity().compareTo(new BigDecimal("5.00")));
         verify(inventoryDatasource, times(1)).create(any());
     }
 
@@ -233,7 +234,8 @@ class InventoryHandlerTest {
         // Assert
         assertEquals(201, response.getStatusCode().value());
         assertNotNull(mockResult.inventory());
-        assertEquals(BigDecimal.valueOf(10.00), mockResult.quantity());
+        // Use compareTo for BigDecimal comparison (scale-independent)
+        assertEquals(0, mockResult.quantity().compareTo(new BigDecimal("10.00")));
         verify(inventoryDatasource, times(1)).createInventoryEntry(any(CreateInventoryEntryDTO.class));
     }
 }
