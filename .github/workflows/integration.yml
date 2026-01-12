@@ -51,15 +51,12 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
-      - name: Build and run tests
+      - name: Build and run tests with coverage
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
           SPRING_DATASOURCE_USERNAME: testuser
           SPRING_DATASOURCE_PASSWORD: testpass
-        run: mvn clean verify -Dspring.profiles.active=test
-
-      - name: Run Coverage
-        run: mvn clean test jacoco:report || true
+        run: mvn clean verify -Pcoverage -Dspring.profiles.active=test
 
       - name: Run Checkstyle
         run: mvn checkstyle:check || true
@@ -72,7 +69,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.0.0.4389:sonar \
-            -Pcoverage \
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
             -Dsonar.host.url=https://sonarcloud.io \
