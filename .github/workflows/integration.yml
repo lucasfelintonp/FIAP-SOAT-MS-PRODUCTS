@@ -58,12 +58,14 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: testpass
         run: mvn clean verify -Dspring.profiles.active=test
 
+      - name: Run Coverage
+        run: mvn clean test jacoco:report || true
+
       - name: Run Checkstyle
         run: mvn checkstyle:check || true
 
       - name: Run SpotBugs
         run: mvn spotbugs:check || true
-
 
       - name: SonarCloud Scan
         env:
