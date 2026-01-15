@@ -64,25 +64,6 @@ Microserviço de Catálogo do sistema de autoatendimento Fastfood, implementado 
 - **Docker**: configuração de Docker Compose para uso local
 - **Kubernetes**: manifests prontos para deploy em cluster K8s
 
-## 🧩 Pré-requisitos
-
-### Para execução local
-
-- [Java 23](https://jdk.java.net/)
-- [Maven](https://maven.apache.org/) (ou use `./mvnw`)
-- [PostgreSQL](https://www.postgresql.org/)
-
-### Para execução com Docker
-
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-
-### Para execução com Kubernetes
-
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
-- [Minikube](https://minikube.sigs.k8s.io/docs/start/) (recomendado)
-- Ou qualquer cluster Kubernetes local (kind, k3s, MicroK8s, etc.)
-
 ## 📊 SonarCloud - Qualidade de Código
 
 O projeto está integrado com o **SonarCloud** para análise contínua de qualidade:
@@ -101,7 +82,27 @@ O projeto está integrado com o **SonarCloud** para análise contínua de qualid
 Acesse o dashboard do SonarCloud em:
 - https://sonarcloud.io/project/overview?id=FIAP-SOAT-MS-CATALOG
 
-ADICIONAR EVIDENCIA
+<img width="2100" height="985" alt="image" src="https://github.com/user-attachments/assets/fd320a1a-67b1-4a5d-b9ba-7c9b0f8a5bcb" />
+
+
+## 🧩 Pré-requisitos
+
+### Para execução local
+
+- [Java 23](https://jdk.java.net/)
+- [Maven](https://maven.apache.org/) (ou use `./mvnw`)
+- [PostgreSQL](https://www.postgresql.org/)
+
+### Para execução com Docker
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+### Para execução com Kubernetes
+
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [Minikube](https://minikube.sigs.k8s.io/docs/start/) (recomendado)
+- Ou qualquer cluster Kubernetes local (kind, k3s, MicroK8s, etc.)
 
 **Windows:**
 
