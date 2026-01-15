@@ -6,6 +6,8 @@
 
 Microserviço de Catálogo do sistema de autoatendimento Fastfood, implementado em Java 23 com Spring Boot e estruturado conforme os princípios da Clean Architecture. Responsável pela gestão completa do catálogo de produtos, categorias e inventário. Fornece uma API REST documentada (OpenAPI) para CRUD de produtos, consultas por categoria e gerenciamento de estoque. Projetado para deployment em containers/Kubernetes, com foco em observabilidade e testes automatizados.
 
+Este microserviço faz parte do Projeto FIAP Fastfood, [disponível aqui](https://github.com/WeesleyAlves/FIAP-SOAT-FASTFOOD-INFRA-MS).
+
 ## 📚 Sumário
 
 - [⚙️ Tecnologias](#️-tecnologias)
